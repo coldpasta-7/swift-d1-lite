@@ -72,6 +72,7 @@
     "UseWhereClausesInForLoops" : true,
     "ValidateDocumentationComments" : true
   },
+  "multilineTrailingCommaBehavior": "alwaysUsed",
   "spacesAroundRangeFormationOperators" : true,
   "spacesBeforeEndOfLineComments" : 2,
   "tabWidth" : 8,
