@@ -1,0 +1,51 @@
+name: CI
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/*.swift"
+      - ".github/workflows/ci.yaml"
+  pull_request:
+    paths:
+      - "**/*.swift"
+      - ".github/workflows/ci.yaml"
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  lint:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install Swift (swiftly)
+        run: |
+          curl -O "https://download.swift.org/swiftly/linux/swiftly-$(uname -m).tar.gz" && \
+          tar zxf "swiftly-$(uname -m).tar.gz" && \
+          ./swiftly init --quiet-shell-followup && \
+          . ${SWIFTLY_HOME_DIR:-~/.local/share/swiftly}/env.sh && \
+            hash -r && \
+          echo "source ${SWIFTLY_HOME_DIR:-~/.local/share/swiftly}/env.sh" >> "$GITHUB_PATH" && \
+          rm -f "swiftly-$(uname -m).tar.gz"
+      - run: swift format lint -s --configuration .swift-format -r Sources Tests Package.swift
+
+  test:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/cache@v5
+        with:
+          key: swift-build-${{ runner.os }}-${{ runner.arch }}
+          path: .build
+      - run: swift test
+        env:
+          D1_ACCOUNT_ID: ${{ secrets.D1_ACCOUNT_ID }}
+          D1_DATABASE_ID: ${{ secrets.D1_DATABASE_ID }}
+          D1_API_TOKEN: ${{ secrets.D1_API_TOKEN }}
