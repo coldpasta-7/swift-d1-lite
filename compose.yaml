@@ -1,0 +1,32 @@
+services:
+  dev:
+    image: "lemonaderoom/swift-d1-lite-dev:latest"
+    build:
+      context: .
+    tty: true
+    volumes:
+      - type: volume
+        source: home
+        target: /lemo
+      - type: bind
+        source: .
+        target: /lemo/workspace
+      - type: volume
+        source: build
+        target: /lemo/workspace/.build
+      - type: bind
+        source: ${HOME}/.codex
+        target: /lemo/.codex
+      - type: bind
+        source: ${HOME}/.gemini
+        target: /lemo/.gemini
+      - type: bind
+        source: ${HOME}/.gitconfig
+        target: /lemo/.gitconfig
+    command:
+      - /bin/bash
+      - /lemo/workspace/entrypoint.sh
+
+volumes:
+  home:
+  build:
